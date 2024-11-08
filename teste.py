@@ -43,3 +43,6 @@ def skills(n:int):
 
 if __name__ == "__main__":
     app()
+
+
+#a testar se isto faz alterações
