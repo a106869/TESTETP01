@@ -19,6 +19,8 @@ app = typer.Typer()
 def top(n: int):
     """ Lista os N trabalhos mais recentes publicados pela itjobs.pt"""
     #argumento opcional para csv
+    #w0ijvsdnvijvpsiojvmçsojv
+    #sdkmvspdmvspmvpwvivnmo
     
 
 @app.command()
