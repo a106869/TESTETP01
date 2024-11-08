@@ -46,3 +46,4 @@ if __name__ == "__main__":
 
 
 #a testar se isto faz alterações
+# olaaaaaaaaaaaaaaaaa
