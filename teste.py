@@ -26,6 +26,7 @@ def search(n: int):
     """ Lista todos os trabalhos full-time publicados por uma determminada empresa, numa determinada região"""
     #tem que permitir inserir o número de traablhos a apresentar, caso contrário apresenta todos os trabalhos
     #argumento opcional para csv
+    # teste 22222222222222222222222222
 
 @app.command()
 def salary(n: int):
