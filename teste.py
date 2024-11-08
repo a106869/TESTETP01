@@ -43,8 +43,3 @@ def skills(n:int):
 
 if __name__ == "__main__":
     app()
-
-
-#olá branch numero 14
-#continuo no 1??
-#continuo aquiiiii no 1
