@@ -1,5 +1,7 @@
 import typer
 import requests #pede acesso ao api
+from typing import Optional
+from typing_extensions import Annotated
 
 API_KEY = '71c6f8366ef375e8b61b33a56a2ce9d9'
 headers = {
@@ -53,7 +55,7 @@ def top(n: int, csv: bool = False):
 def search(nome: str, localidade: str, n: Annotated[Optional[int], typer.Argument()]=None, csv: bool = False):
     """ Lista todos os trabalhos full-time publicados por uma determminada empresa, numa determinada região """
     data = response()
-    jobs += data['results']
+    data = data['results']
     jobs_full_time = (data['company']['name']== nome and data['types'][0]["name"]== "Full-time" and data['locations']==['locations'][0]['name']== localidade)
     if n is not None:
         jobs_full_time = jobs_full_time[:n]
