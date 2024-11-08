@@ -48,7 +48,7 @@ def top(n: int, csv: bool = False):
         #titulo;empresa;descricao;data de publicacao;salario;localizacao
     #else:
         #break
-
+#kshbcksjbcslj
 @app.command()
 def search(nome: str, localidade: str, n: Annotated[Optional[int], typer.Argument()]=None, csv: bool = False):
     """ Lista todos os trabalhos full-time publicados por uma determminada empresa, numa determinada região """
