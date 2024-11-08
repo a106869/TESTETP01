@@ -1,5 +1,7 @@
 import typer
 import requests #pede acesso ao api
+from typing import Optional
+from typing_extensions import Annotated
 
 API_KEY = '71c6f8366ef375e8b61b33a56a2ce9d9'
 headers = {
@@ -50,9 +52,30 @@ def top(n: int, csv: bool = False):
         #break
 
 @app.command()
-def search(n: int):
+def search(nome: str, localidade: str, n: Annotated[Optional[str], typer.Argument()]=None, csv: bool = False):
     """ Lista todos os trabalhos full-time publicados por uma determminada empresa, numa determinada região """
+    data = response()
+    jobs = data[]
+    jobs = jobs[:n]
+    if n is None:
 
+    else:
+        for x in jobs:
+            title = x.get('title', 'NA') #se não existir valor em 'title' apresenta 'NA'
+            company_name = x.get('company', {}).get('name', 'NA')
+            body = x.get('body', 'NA')
+            published_at = x.get('publishedAt', 'NA')
+            try: #tenta aceder ao index 0 da lista, se não existir retorna 'NA'
+                location = x['locations'][0].get('name', 'NA') 
+            except (IndexError, KeyError): 
+                location = 'NA'
+            wage = x.get('wage', 'NA')
+            print(f"Título: {title}")
+            print(f"Empresa: {company_name}")
+            print(f"Description: {body}")
+            print(f"Data de publicação: {published_at}")
+            print(f"Location: {location}")
+            print(f"Salário: {wage}")
 
 
     #tem que permitir inserir o número de traablhos a apresentar, caso contrário apresenta todos os trabalhos
