@@ -43,6 +43,3 @@ def skills(n:int):
 
 if __name__ == "__main__":
     app()
-
-
-#olá branch numero 1
