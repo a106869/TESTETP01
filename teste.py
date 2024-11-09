@@ -15,7 +15,6 @@ def response(page): #função para fazer a requisição
     data = response.json()
     return data
 
-
 def exportar_csv(data, filename='jobs.csv'): 
     fieldnames = ["Título", "Empresa", "Descrição", "Data de publicação", "Localização", "Salário"]
     with open(filename, 'w', newline='', encoding='utf-8') as file:
