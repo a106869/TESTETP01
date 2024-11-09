@@ -23,28 +23,16 @@ def top(n: int, csv: bool = False):
     jobs = []
     page = 1
     while len(jobs) < n:
-        data = response()
+        data = response(page)
         jobs += data['results']
         page += 1
         if not data['results']: 
             break
     jobs = jobs[:n]
-    for x in jobs:
-       title = x.get('title', 'NA') #se não existir valor em 'title' apresenta 'NA'
-       company_name = x.get('company', {}).get('name', 'NA')
-       body = x.get('body', 'NA')
-       published_at = x.get('publishedAt', 'NA')
-       try: #tenta aceder ao index 0 da lista, se não existir retorna 'NA'
-           location = x['locations'][0].get('name', 'NA') 
-       except (IndexError, KeyError): 
-           location = 'NA'
-       wage = x.get('wage', 'NA')
-       print(f"Título: {title}")
-       print(f"Empresa: {company_name}")
-       print(f"Description: {body}")
-       print(f"Data de publicação: {published_at}")
-       print(f"Location: {location}")
-       print(f"Salário: {wage}")
+    if jobs: 
+        print(json.dumps(jobs, indent=4, ensure_ascii=False))
+    else:
+        print("Não foram encontradas correspondências.")
     #if csv:
         #código para criar ficheiro csv com as respostas
         #titulo;empresa;descricao;data de publicacao;salario;localizacao
