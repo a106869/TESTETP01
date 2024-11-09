@@ -53,7 +53,7 @@ def salary(job_id: int):
                 else:
                     # Caso o salário não esteja presente, tenta buscar um valor na descrição usando regex
                     body = job.get("body", "")
-                    wage_match = re.search(r"\b(\d{4,6})\b", body)  # Procura números entre 4 e 6 dígitos
+                    wage_match = re.search(r"(\d{1,3}(?:[\.,]\d{3})*(?:[\.,]\d{2})?)\s?(?:€|\$|USD|£|₹|K)?", body)
                     
                     if wage_match:
                         estimated_wage = wage_match.group(0)
@@ -64,6 +64,7 @@ def salary(job_id: int):
             page += 1  # Se o job não foi encontrado na página atual, tenta a próxima
     except requests.RequestException:
         print("Erro ao acessar a API. Verifique a conexão ou o job_id fornecido.")
+
 
 
 @app.command()
