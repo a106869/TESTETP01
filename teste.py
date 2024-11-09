@@ -29,10 +29,22 @@ def top(n: int, csv: bool = False):
         if not data['results']: 
             break
     jobs = jobs[:n]
-    if jobs: 
-        print(json.dumps(jobs, indent=4, ensure_ascii=False))
+    output = []
+    for job in jobs:
+        job_info = {
+            "Título": job.get('title', 'NA'),
+            "Empresa": job.get('company', {}).get('name', 'NA'),
+            "Descrição": job.get('body', 'NA'),
+            "Data de publicação": job.get('publishedAt', 'NA'), 
+            "Localização": job['locations'][0].get('name', 'NA') if job.get('locations') else 'NA', 
+            "Salário": job.get('wage', 'NA')
+        }
+        output.append(job_info)
+    if output:
+        print(json.dumps(output, indent=4, ensure_ascii=False))
     else:
-        print("Não foram encontradas correspondências.")
+        print("Não foram encontradas correspondências para a sua pesquisa.")
+
     #if csv:
         #código para criar ficheiro csv com as respostas
         #titulo;empresa;descricao;data de publicacao;salario;localizacao
@@ -59,23 +71,21 @@ def search(nome: str, localidade: str, n: Optional[int] = None, csv: bool = Fals
             break
     if n is not None:
         jobs_full_time = jobs_full_time[:n]
-    print(json.dumps(jobs_full_time, indent=4, ensure_ascii=False))
-    '''for x in jobs_full_time:
-        title = x.get('title', 'NA') #se não existir valor em 'title' apresenta 'NA'
-        company_name = x.get('company', {}).get('name', 'NA')
-        body = x.get('body', 'NA')
-        published_at = x.get('publishedAt', 'NA')
-        try: #tenta aceder ao index 0 da lista, se não existir retorna 'NA'
-            location = x['locations'][0].get('name', 'NA') 
-        except (IndexError, KeyError): 
-            location = 'NA'
-        wage = x.get('wage', 'NA')
-        print(f"Título: {title}")
-        print(f"Empresa: {company_name}")
-        print(f"Description: {body}")
-        print(f"Data de publicação: {published_at}")
-        print(f"Location: {location}")
-        print(f"Salário: {wage}")'''
+    output = []
+    for job in jobs_full_time:
+        job_info = {
+            "Título": job.get('title', 'NA'),
+            "Empresa": job.get('company', {}).get('name', 'NA'),
+            "Descrição": (job.get('body', 'NA')[:200] + '...') if len(job.get('body', 'NA')) > 200 else job.get('body', 'NA'),
+            "Data de publicação": job.get('publishedAt', 'NA'), 
+            "Localização": job['locations'][0].get('name', 'NA') if job.get('locations') else 'NA', 
+            "Salário": job.get('wage', 'NA')
+        }
+        output.append(job_info)
+    if output:
+        print(json.dumps(output, indent=4, ensure_ascii=False))
+    else:
+        print("Não foram encontradas correspondências para a sua pesquisa.")
 
 #if csv:
     #tem que permitir inserir o número de traablhos a apresentar, caso contrário apresenta todos os trabalhos
