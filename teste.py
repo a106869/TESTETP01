@@ -1,7 +1,11 @@
 import typer
 import requests #pede acesso ao api
 from typing import Optional
+<<<<<<< Updated upstream
 import json
+=======
+from typing_extensions import Annotated
+>>>>>>> Stashed changes
 
 API_KEY = '71c6f8366ef375e8b61b33a56a2ce9d9'
 headers = {
@@ -52,6 +56,7 @@ def top(n: int, csv: bool = False):
         #break
 
 @app.command()
+<<<<<<< Updated upstream
 def search(nome: str, localidade: str, n: Optional[int] = None, csv: bool = False):
     """ Lista todos os trabalhos full-time publicados por uma determminada empresa, numa determinada região. Insira o nome da empresa e da localidade entre aspas para melhor funcionamento. """
     jobs_full_time = []
@@ -69,6 +74,13 @@ def search(nome: str, localidade: str, n: Optional[int] = None, csv: bool = Fals
         page += 1
         if 'results' not in data:
             break
+=======
+def search(nome: str, localidade: str, n: Annotated[Optional[int], typer.Argument()]=None, csv: bool = False):
+    """ Lista todos os trabalhos full-time publicados por uma determminada empresa, numa determinada região """
+    data = response()
+    data = data['results']
+    jobs_full_time = (data['company']['name']== nome and data['types'][0]["name"]== "Full-time" and data['locations']==['locations'][0]['name']== localidade)
+>>>>>>> Stashed changes
     if n is not None:
         jobs_full_time = jobs_full_time[:n]
     print(json.dumps(jobs_full_time, indent=4, ensure_ascii=False))
