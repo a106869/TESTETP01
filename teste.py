@@ -1,5 +1,6 @@
 import typer
 import requests #pede acesso ao api
+import json
 
 API_KEY = '71c6f8366ef375e8b61b33a56a2ce9d9'
 headers = {
@@ -21,28 +22,28 @@ def top(n: int, csv: bool = False):
     jobs = []
     page = 1
     while len(jobs) < n:
-        data = response()
+        data = response(page)
         jobs += data['results']
         page += 1
         if not data['results']: 
             break
     jobs = jobs[:n]
-    for x in jobs:
-       title = x.get('title', 'NA') #se não existir valor em 'title' apresenta 'NA'
-       company_name = x.get('company', {}).get('name', 'NA')
-       body = x.get('body', 'NA')
-       published_at = x.get('publishedAt', 'NA')
-       try: #tenta aceder ao index 0 da lista, se não existir retorna 'NA'
-           location = x['locations'][0].get('name', 'NA') 
-       except (IndexError, KeyError): 
-           location = 'NA'
-       wage = x.get('wage', 'NA')
-       print(f"Título: {title}")
-       print(f"Empresa: {company_name}")
-       print(f"Description: {body}")
-       print(f"Data de publicação: {published_at}")
-       print(f"Location: {location}")
-       print(f"Salário: {wage}")
+    output = []
+    for job in jobs:
+        job_info = {
+            "Título": job.get('title', 'NA'),
+            "Empresa": job.get('company', {}).get('name', 'NA'),
+            "Descrição": job.get('body', 'NA'),
+            "Data de publicação": job.get('publishedAt', 'NA'), 
+            "Localização": job['locations'][0].get('name', 'NA') if job.get('locations') else 'NA', 
+            "Salário": job.get('wage', 'NA')
+        }
+        output.append(job_info)
+    if output:
+        print(json.dumps(output, indent=4, ensure_ascii=False))
+    else:
+        print("Não foram encontradas correspondências para a sua pesquisa.")
+
     #if csv:
         #código para criar ficheiro csv com as respostas
         #titulo;empresa;descricao;data de publicacao;salario;localizacao
