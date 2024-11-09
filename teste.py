@@ -23,6 +23,27 @@ def exportar_csv(data, filename='jobs.csv'):
         writer.writerows(data)
     print(f"Dados exportados para {filename}")
 
+def exibir_output(jobs):
+    """Processa a lista de trabalhos e imprime o output em formato JSON."""
+    output = []
+    for job in jobs:
+        job_info = {
+            "Título": job.get('title', 'NA'),
+            "Empresa": job.get('company', {}).get('name', 'NA'),
+            "Descrição": job.get('body', 'NA'),
+            "Data de publicação": job.get('publishedAt', 'NA'),
+            "Localização": job['locations'][0].get('name', 'NA') if job.get('locations') else 'NA',
+            "Salário": job.get('wage', 'NA')
+        }
+        output.append(job_info)
+    
+    if output:
+        print(json.dumps(output, indent=4, ensure_ascii=False))
+    else:
+        print("Não foram encontradas correspondências para a sua pesquisa.")
+
+    return output
+
 app = typer.Typer()
 
 @app.command()
@@ -38,21 +59,7 @@ def top(n: int, export_csv: bool = False):
         if not data['results']: 
             break
     jobs = jobs[:n]
-    output = []
-    for job in jobs:
-        job_info = {
-            "Título": job.get('title', 'NA'),
-            "Empresa": job.get('company', {}).get('name', 'NA'),
-            "Descrição": job.get('body', 'NA'),
-            "Data de publicação": job.get('publishedAt', 'NA'), 
-            "Localização": job['locations'][0].get('name', 'NA') if job.get('locations') else 'NA', 
-            "Salário": job.get('wage', 'NA')
-        }
-        output.append(job_info)
-    if output:
-        print(json.dumps(output, indent=4, ensure_ascii=False))
-    else:
-        print("Não foram encontradas correspondências para a sua pesquisa.")
+    output = exibir_output(jobs)
     if export_csv:
         exportar_csv(output)
 
