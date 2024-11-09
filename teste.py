@@ -1,8 +1,6 @@
 import typer
 from typing import Optional, Annotated, List
 import requests #pede acesso ao api
-from datetime import datetime
-import json
 
 API_KEY = '71c6f8366ef375e8b61b33a56a2ce9d9'
 headers = {
