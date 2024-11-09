@@ -2,6 +2,7 @@ import typer
 import requests #pede acesso ao api
 from typing import Optional
 import json
+import csv
 
 API_KEY = '71c6f8366ef375e8b61b33a56a2ce9d9'
 headers = {
@@ -14,10 +15,19 @@ def response(page): #função para fazer a requisição
     data = response.json()
     return data
 
+
+def exportar_csv(data, filename='jobs.csv'): 
+    fieldnames = ["Título", "Empresa", "Descrição", "Data de publicação", "Localização", "Salário"]
+    with open(filename, 'w', newline='', encoding='utf-8') as file:
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(data)
+    print(f"Dados exportados para {filename}")
+
 app = typer.Typer()
 
 @app.command()
-def top(n: int, csv: bool = False):
+def top(n: int, export_csv: bool = False):
     """ Lista os N trabalhos mais recentes publicados pela itjobs.pt """
     #argumento opcional para csv
     jobs = []
@@ -29,15 +39,23 @@ def top(n: int, csv: bool = False):
         if not data['results']: 
             break
     jobs = jobs[:n]
-    if jobs: 
-        print(json.dumps(jobs, indent=4, ensure_ascii=False))
+    output = []
+    for job in jobs:
+        job_info = {
+            "Título": job.get('title', 'NA'),
+            "Empresa": job.get('company', {}).get('name', 'NA'),
+            "Descrição": job.get('body', 'NA'),
+            "Data de publicação": job.get('publishedAt', 'NA'), 
+            "Localização": job['locations'][0].get('name', 'NA') if job.get('locations') else 'NA', 
+            "Salário": job.get('wage', 'NA')
+        }
+        output.append(job_info)
+    if output:
+        print(json.dumps(output, indent=4, ensure_ascii=False))
     else:
-        print("Não foram encontradas correspondências.")
-    #if csv:
-        #código para criar ficheiro csv com as respostas
-        #titulo;empresa;descricao;data de publicacao;salario;localizacao
-    #else:
-        #break
+        print("Não foram encontradas correspondências para a sua pesquisa.")
+    if export_csv:
+        exportar_csv(output)
 
 @app.command()
 def search(nome: str, localidade: str, n: Optional[int] = None, csv: bool = False):
@@ -83,6 +101,7 @@ def search(nome: str, localidade: str, n: Optional[int] = None, csv: bool = Fals
     #tem que permitir inserir o número de traablhos a apresentar, caso contrário apresenta todos os trabalhos
     #argumento opcional para csv
 
+
 @app.command()
 def salary(n: int):
     """ Extrai a informação relativa ao salário oferecido por uma determinado job id """
@@ -97,5 +116,5 @@ def skills(n:int):
 #para cada funcionalidade (exceto salary), deve poder exportar para CSV a informação com os campos: título, empresa, descrição, data de publicação, salário e localização
 #para isso, é necessário poder adicionar um argumento opcional a cada um dos comandos
 
-if __name__ == "_main_":
+if __name__ == "__main__":
     app()
