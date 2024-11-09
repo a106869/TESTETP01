@@ -1,6 +1,7 @@
 import typer
 import requests #pede acesso ao api
 from typing import Optional
+import json
 
 API_KEY = '71c6f8366ef375e8b61b33a56a2ce9d9'
 headers = {
@@ -70,7 +71,8 @@ def search(nome: str, localidade: str, n: Optional[int] = None, csv: bool = Fals
             break
     if n is not None:
         jobs_full_time = jobs_full_time[:n]
-    for x in jobs_full_time:
+    print(json.dumps(jobs_full_time, indent=4, ensure_ascii=False))
+    '''for x in jobs_full_time:
         title = x.get('title', 'NA') #se não existir valor em 'title' apresenta 'NA'
         company_name = x.get('company', {}).get('name', 'NA')
         body = x.get('body', 'NA')
@@ -85,7 +87,7 @@ def search(nome: str, localidade: str, n: Optional[int] = None, csv: bool = Fals
         print(f"Description: {body}")
         print(f"Data de publicação: {published_at}")
         print(f"Location: {location}")
-        print(f"Salário: {wage}")
+        print(f"Salário: {wage}")'''
 
 #if csv:
     #tem que permitir inserir o número de traablhos a apresentar, caso contrário apresenta todos os trabalhos
