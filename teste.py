@@ -32,8 +32,23 @@ def salary(n: int):
     #mesmo que o valor seja 'wage a null'; neste caso usar expressões regulares para procurar noutros campos relevantes
 
 @app.command()
-def skills(n:int):
+def skills(skill:list, dataInicial:str, dataFinal:str):
     """ Quais os trabalhos que requerem uma determinada lista de skills, num determinado período de tempo"""
+    data = response()
+    page = 1
+    while data['results'] is not None:
+        data = data['results']
+        page += 1
+        if data['results'] is None:
+            break
+    dataInicial = datetime.strptime(dataInicial, '&Y-%m-%d')
+    dataFinal = datetime.strptime(dataFinal, '%Y-%m-%d')
+    publishedAt = data['results']['publishedAt']
+    dataApi = datetime.strptime(publishedAt, '%Y-%m-%d')
+    if dataInicial <= dataApi <= dataFinal:
+        return True
+    else:
+        return False
     #recebe a lista de skills e datas de início e de fim [skill1, skill2, skill3] dataInicial dataFinal
     #argumento opcional para csv
 
