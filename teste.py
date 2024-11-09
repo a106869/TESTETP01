@@ -67,7 +67,7 @@ def skills(skill: List[str], datainicial: str, datafinal: str):
         job_info = {
             "Título": job.get('title', 'NA'),
             "Empresa": job.get('company', {}).get('name', 'NA'),
-            "Descrição": (job.get('body', 'NA')[:200] + '...') if len(job.get('body', 'NA')) > 200 else job.get('body', 'NA'),
+            "Descrição": job.get('body', 'NA'),
             "Data de publicação": job.get('publishedAt', 'NA'), 
             "Localização": job['locations'][0].get('name', 'NA') if job.get('locations') else 'NA', 
             "Salário": job.get('wage', 'NA')
