@@ -2,7 +2,6 @@ import typer
 import requests #pede acesso ao api
 import json
 import csv
-import os
 
 API_KEY = '71c6f8366ef375e8b61b33a56a2ce9d9'
 headers = {
