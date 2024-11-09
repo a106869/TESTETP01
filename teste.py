@@ -23,16 +23,28 @@ def top(n: int, csv: bool = False):
     jobs = []
     page = 1
     while len(jobs) < n:
-        data = response(page)
+        data = response()
         jobs += data['results']
         page += 1
         if not data['results']: 
             break
     jobs = jobs[:n]
-    if jobs: 
-        print(json.dumps(jobs, indent=4, ensure_ascii=False))
-    else:
-        print("Não foram encontradas correspondências.")
+    for x in jobs:
+       title = x.get('title', 'NA') #se não existir valor em 'title' apresenta 'NA'
+       company_name = x.get('company', {}).get('name', 'NA')
+       body = x.get('body', 'NA')
+       published_at = x.get('publishedAt', 'NA')
+       try: #tenta aceder ao index 0 da lista, se não existir retorna 'NA'
+           location = x['locations'][0].get('name', 'NA') 
+       except (IndexError, KeyError): 
+           location = 'NA'
+       wage = x.get('wage', 'NA')
+       print(f"Título: {title}")
+       print(f"Empresa: {company_name}")
+       print(f"Description: {body}")
+       print(f"Data de publicação: {published_at}")
+       print(f"Location: {location}")
+       print(f"Salário: {wage}")
     #if csv:
         #código para criar ficheiro csv com as respostas
         #titulo;empresa;descricao;data de publicacao;salario;localizacao
@@ -41,41 +53,43 @@ def top(n: int, csv: bool = False):
 
 @app.command()
 def search(nome: str, localidade: str, n: Optional[int] = None, csv: bool = False):
-    """ Lista todos os trabalhos full-time publicados por uma determminada empresa, numa determinada região. Insira o nome da empresa e da localidade entre aspas para melhor funcionamento. """
+    """ Lista todos os trabalhos full-time publicados por uma determinada empresa, numa determinada região. 
+    Insira o nome da empresa e da localidade entre aspas para melhor funcionamento. """
     jobs_full_time = []
-    page = 1
+    page = 1 
     while True:
         data = response(page)
-        for job in data['results']: 
-            company_name = job.get('company',{}).get('name', None) #dicionário então {}; valor então None
-            if company_name == nome:
-                types = job.get('types',[{}])  #lista de dicionários então [{}]
-                if types[0].get('name') == 'Full-time':
-                    locations = job.get('locations', [{}]) #lista de dicionários então  [{}]
-                    if any(location.get('name', None) == localidade for location in locations): #valor então None
-                        jobs_full_time.append(job)
-        page += 1
-        if 'results' not in data:
+        if 'results' not in data or not data['results']: # verificar se a chave 'results' existe; verificar se 'results está vazio'
             break
+        for job in data['results']:
+            company_name = job.get('company', {}).get('name', None)  
+            if company_name == nome:
+                types = job.get('types', [{}]) 
+                if types[0].get('name') == 'Full-time':
+                    locations = job.get('locations', [{}]) 
+                    if any(location.get('name', None) == localidade for location in locations):
+                        jobs_full_time.append(job) 
+        page += 1    
     if n is not None:
         jobs_full_time = jobs_full_time[:n]
     print(json.dumps(jobs_full_time, indent=4, ensure_ascii=False))
-    '''for x in jobs_full_time:
-        title = x.get('title', 'NA') #se não existir valor em 'title' apresenta 'NA'
+    for x in jobs_full_time:
+        title = x.get('title', 'NA')
         company_name = x.get('company', {}).get('name', 'NA')
         body = x.get('body', 'NA')
         published_at = x.get('publishedAt', 'NA')
-        try: #tenta aceder ao index 0 da lista, se não existir retorna 'NA'
+        try:
             location = x['locations'][0].get('name', 'NA') 
         except (IndexError, KeyError): 
             location = 'NA'
         wage = x.get('wage', 'NA')
         print(f"Título: {title}")
         print(f"Empresa: {company_name}")
-        print(f"Description: {body}")
+        print(f"Descrição: {body}")
         print(f"Data de publicação: {published_at}")
-        print(f"Location: {location}")
-        print(f"Salário: {wage}")'''
+        print(f"Localização: {location}")
+        print(f"Salário: {wage}")
+
 
 #if csv:
     #tem que permitir inserir o número de traablhos a apresentar, caso contrário apresenta todos os trabalhos
@@ -95,5 +109,5 @@ def skills(n:int):
 #para cada funcionalidade (exceto salary), deve poder exportar para CSV a informação com os campos: título, empresa, descrição, data de publicação, salário e localização
 #para isso, é necessário poder adicionar um argumento opcional a cada um dos comandos
 
-if __name__ == "__main__":
+if __name__ == "_main_":
     app()
