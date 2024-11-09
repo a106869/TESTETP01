@@ -24,7 +24,6 @@ def exportar_csv(data, filename='jobs.csv'):
     print(f"Dados exportados para {filename}")
 
 def exibir_output(jobs):
-    """Processa a lista de trabalhos e imprime o output em formato JSON."""
     output = []
     for job in jobs:
         job_info = {
@@ -36,12 +35,10 @@ def exibir_output(jobs):
             "Salário": job.get('wage', 'NA')
         }
         output.append(job_info)
-    
     if output:
         print(json.dumps(output, indent=4, ensure_ascii=False))
     else:
         print("Não foram encontradas correspondências para a sua pesquisa.")
-
     return output
 
 app = typer.Typer()
