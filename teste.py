@@ -20,36 +20,6 @@ app = typer.Typer()
 def top(n: int, csv: bool = False):
     """ Lista os N trabalhos mais recentes publicados pela itjobs.pt """
     #argumento opcional para csv
-    jobs = []
-    page = 1
-    while len(jobs) < n:
-        data = response(page)
-        jobs += data['results']
-        page += 1
-        if not data['results']: 
-            break
-    jobs = jobs[:n]
-    output = []
-    for job in jobs:
-        job_info = {
-            "Título": job.get('title', 'NA'),
-            "Empresa": job.get('company', {}).get('name', 'NA'),
-            "Descrição": job.get('body', 'NA'),
-            "Data de publicação": job.get('publishedAt', 'NA'), 
-            "Localização": job['locations'][0].get('name', 'NA') if job.get('locations') else 'NA', 
-            "Salário": job.get('wage', 'NA')
-        }
-        output.append(job_info)
-    if output:
-        print(json.dumps(output, indent=4, ensure_ascii=False))
-    else:
-        print("Não foram encontradas correspondências para a sua pesquisa.")
-
-    #if csv:
-        #código para criar ficheiro csv com as respostas
-        #titulo;empresa;descricao;data de publicacao;salario;localizacao
-    #else:
-        #break
 
 @app.command()
 def search(nome: str, localidade: str, n: Optional[int] = None, csv: bool = False):
