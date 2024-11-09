@@ -27,9 +27,29 @@ def search(n: int):
     #argumento opcional para csv
 
 @app.command()
-def salary(n: int):
-    """ Extrai a informação relativa ao salário oferecido por uma determinado job id"""
-    #mesmo que o valor seja 'wage a null'; neste caso usar expressões regulares para procurar noutros campos relevantes
+def salary(job_id: int):
+    """Extrai o salário oferecido para um job_id, mesmo que o campo 'wage' esteja nulo."""
+    try:
+        # Faz a requisição para obter os detalhes do trabalho específico
+        data = response(endpoint=f"job/{job_id}.json")
+
+        # Primeiro, tenta obter o valor do campo 'wage' diretamente
+        wage = data.get("wage")
+        if wage:
+            print(f"Salário: {wage}")
+        else:
+            # Se 'wage' for nulo, utiliza uma expressão regular para buscar números no campo 'body'
+            body = data.get("body", "")
+            wage_match = re.search(r"\b(\d{4,6})\b", body)  # Procura números entre 4 e 6 dígitos
+            
+            if wage_match:
+                estimated_wage = wage_match.group(0)
+                print(f"Salário estimado: {estimated_wage}")
+            else:
+                print("Salário não especificado")
+    
+    except requests.RequestException as e:
+        print(f"Erro ao acessar a API: {e}")
 
 @app.command()
 def skills(n:int):
