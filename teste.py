@@ -56,7 +56,7 @@ def top(n: int, export_csv: bool = False):
         print("Não foram encontradas correspondências para a sua pesquisa.")
     if export_csv:
         exportar_csv(output)
-
+##
 @app.command()
 def search(nome: str, localidade: str, n: Optional[int] = None, csv: bool = False):
     """ Lista todos os trabalhos full-time publicados por uma determinada empresa, numa determinada região. 
