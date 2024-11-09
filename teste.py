@@ -1,6 +1,8 @@
 import typer
 from typing import Optional, Annotated, List
 import requests #pede acesso ao api
+from datetime import datetime
+import json
 
 API_KEY = '71c6f8366ef375e8b61b33a56a2ce9d9'
 headers = {
@@ -30,10 +32,6 @@ def search(n: int):
 def salary(n: int):
     """ Extrai a informação relativa ao salário oferecido por uma determinado job id"""
     #mesmo que o valor seja 'wage a null'; neste caso usar expressões regulares para procurar noutros campos relevantes
-
-
-
-
 
 @app.command()
 def skills(skill: List[str], datainicial: str, datafinal: str):
