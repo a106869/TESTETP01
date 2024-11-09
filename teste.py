@@ -1,22 +1,33 @@
 import typer
 import requests #pede acesso ao api
 import json
+import csv
+import os
 
 API_KEY = '71c6f8366ef375e8b61b33a56a2ce9d9'
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36', #engana o api a pensar que estou a aceder pro um navegador
 }
 
-def response(): #função para fazer a requisição
-    url = f'https://api.itjobs.pt/job/list.json?api_key={API_KEY}'
+def response(page): #função para fazer a requisição
+    url = f'https://api.itjobs.pt/job/list.json?api_key={API_KEY}&page={page}'
     response = requests.get(url, headers=headers)
     data = response.json()
     return data
 
+
+def exportar_csv(data, filename='jobs.csv'): 
+    fieldnames = ["Título", "Empresa", "Descrição", "Data de publicação", "Localização", "Salário"]
+    with open(filename, 'w', newline='', encoding='utf-8') as file:
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(data)
+    print(f"Dados exportados para {filename}")
+
 app = typer.Typer()
 
 @app.command()
-def top(n: int, csv: bool = False):
+def top(n: int, export_csv: bool = False):
     """ Lista os N trabalhos mais recentes publicados pela itjobs.pt """
     #argumento opcional para csv
     jobs = []
@@ -43,12 +54,8 @@ def top(n: int, csv: bool = False):
         print(json.dumps(output, indent=4, ensure_ascii=False))
     else:
         print("Não foram encontradas correspondências para a sua pesquisa.")
-
-    #if csv:
-        #código para criar ficheiro csv com as respostas
-        #titulo;empresa;descricao;data de publicacao;salario;localizacao
-    #else:
-        #break
+    if export_csv:
+        exportar_csv(output)
 
 @app.command()
 def search(n: int):
