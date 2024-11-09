@@ -53,7 +53,7 @@ def salary(job_id: int):
                 else:
                     # Caso o salário não esteja presente, tenta buscar um valor na descrição usando regex
                     body = job.get("body", "")
-                    wage_match = re.search(r"(\d{1,3}(?:[\.,]\d{3})*(?:[\.,]\d{2})?)\s?(?:€|\$|USD|£|₹|K)?", body)
+                    wage_match = re.search(r"(\d{3,}(?:[\.,]\d{3})*)\s(?:€|\$|USD|£|₹|K)?", body)
                     
                     if wage_match:
                         estimated_wage = wage_match.group(0)
