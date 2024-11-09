@@ -4,14 +4,13 @@ import requests #pede acesso ao api
 API_KEY = '71c6f8366ef375e8b61b33a56a2ce9d9'
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36', #engana o api a pensar que estou a aceder pro um navegador
-    'api_key': f"{API_KEY}"
 }
 
-def response(): #função para fazer a requisição
-    url = 'https://api.itjobs.pt/job/list.json'
+def response(page): #função para fazer a requisição
+    url = f'https://api.itjobs.pt/job/list.json?api_key={API_KEY}&page={page}'
     response = requests.get(url, headers=headers)
-    print(response.status_code)
-    return response.json()
+    data = response.json()
+    return data
 
 app = typer.Typer()
 
