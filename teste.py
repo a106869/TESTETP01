@@ -69,6 +69,7 @@ def search(nome: str, localidade: str, n: Optional[int] = None, export_csv: bool
     page = 1 
     while True:
         data = response(page)
+<<<<<<< Updated upstream
         if 'results' not in data or not data['results']: # verificar se a chave 'results' existe; verificar se 'results está vazio'
             break
         for job in data['results']:
@@ -85,6 +86,40 @@ def search(nome: str, localidade: str, n: Optional[int] = None, export_csv: bool
     output = exibir_output(jobs_full_time)
     if export_csv:
         exportar_csv(output)    
+=======
+        if 'results' not in data or not data['results']:
+            break
+        for job in data['results']: 
+            company_name = job.get('company',{}).get('name', None) #dicionário então {}; valor então None
+            if company_name == nome:
+                types = job.get('types',[{}])  #lista de dicionários então [{}]
+                if types[0].get('name') == 'Full-time':
+                    locations = job.get('locations', [{}]) #lista de dicionários então  [{}]
+                    if any(location.get('name', None) == localidade for location in locations): #valor então None
+                        jobs_full_time.append(job)
+        page += 1
+    if n is not None:
+        jobs_full_time = jobs_full_time[:n]
+    output = []
+    for job in jobs_full_time:
+        job_info = {
+            "Título": job.get('title', 'NA'),
+            "Empresa": job.get('company', {}).get('name', 'NA'),
+            "Descrição": job.get('body', 'NA'),
+            "Data de publicação": job.get('publishedAt', 'NA'), 
+            "Localização": job['locations'][0].get('name', 'NA') if job.get('locations') else 'NA', 
+            "Salário": job.get('wage', 'NA')
+        }
+        output.append(job_info)
+    if output:
+        print(json.dumps(output, indent=4, ensure_ascii=False))
+    else:
+        print("Não foram encontradas correspondências para a sua pesquisa.")
+
+#if csv:
+    #tem que permitir inserir o número de traablhos a apresentar, caso contrário apresenta todos os trabalhos
+    #argumento opcional para csv
+>>>>>>> Stashed changes
 
 @app.command()
 def salary(n: int):
