@@ -59,6 +59,7 @@ def top(n: int, export_csv: bool = False):
     if export_csv:
         exportar_csv(output)
 
+@app.command()
 def search(nome: str, localidade: str, n: Optional[int] = None, export_csv: bool = False):
     """ Lista todos os trabalhos full-time publicados por uma determinada empresa, numa determinada região. 
     Insira o nome da empresa e da localidade entre aspas para melhor funcionamento. """
