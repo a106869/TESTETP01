@@ -1,5 +1,6 @@
 import typer
 import requests #pede acesso ao api
+import re
 
 API_KEY = '71c6f8366ef375e8b61b33a56a2ce9d9'
 headers = {
@@ -35,6 +36,67 @@ def skills(n:int):
     """ Quais os trabalhos que requerem uma determinada lista de skills, num determinado período de tempo"""
     #recebe a lista de skills e datas de início e de fim [skill1, skill2, skill3] dataInicial dataFinal
     #argumento opcional para csv
+
+@app.command()
+def contacto(job_id:int):
+    """ Extrai o número de telefone mencionado numa vaga. """
+    page = 1 
+    phones = None 
+    while True: 
+        data = response(page) 
+        if 'results' not in data or not data['results']: 
+            phones = None 
+            break
+        job = None 
+        for x in data['results']: 
+            if x['id'] == job_id: 
+                job = x 
+                break 
+        if job: 
+            company = job.get('company', {}) 
+            phones = company.get('phone') 
+            if not phones: 
+                body = job.get("body", "") 
+                phones = re.findall(r"\b(\+?\d{1,3})?[-. \(\)]?\d{1,4}[-. \(\)]?\d{1,4}[-. \(\)]?\d{1,9}\b", body) 
+                if not phones:
+                    description = company.get('description', '')
+                    phones = re.findall(r"\b(\+?\d{1,3})?[-. \(\)]?\d{1,4}[-. \(\)]?\d{1,4}[-. \(\)]?\d{1,9}\b", description)
+            break
+        page += 1 
+    if phones: 
+        print(f"Telefones: {', '.join(phones)}") 
+    else:
+        print("Nenhum número de telefone especificado.")
+
+def email(job_id: int): 
+    """Extrai o email mencionado numa vaga."""
+    page = 1
+    emails = None
+    while True:
+        data = response(page)
+        if 'results' not in data or not data['results']:
+            emails = None
+            break
+        job = None
+        for x in data['results']:
+            if x['id'] == job_id:
+                job = x
+                break
+        if job: 
+            company = job.get('company', {})
+            emails = company.get('email')
+            if not emails:
+                body = job.get("body", "")
+                emails = re.findall(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b", body)
+                if not emails:
+                    description = company.get('description', '')
+                    emails = re.findall(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b", description)
+            break
+        page += 1
+    if emails:
+        print(f"Emails: {', '.join(emails)}")
+    else:
+        print("Nenhum email especificado.")
 
 #para cada funcionalidade (exceto salary), deve poder exportar para CSV a informação com os campos: título, empresa, descrição, data de publicação, salário e localização
 #para isso, é necessário poder adicionar um argumento opcional a cada um dos comandos
