@@ -57,14 +57,14 @@ def contacto(job_id:int):
             phones = company.get('phone') 
             if not phones: 
                 body = job.get("body", None) 
-                phones = re.findall(r"\b(\+?\d{1,3})?[-. \(\)]?\d{1,4}[-. \(\)]?\d{1,4}[-. \(\)]?\d{1,9}\b", body) 
+                phones = re.findall(r"\b((\+351)?(9|2)\d{2}\s?\d{3}\s?\d{3})\b", body) 
                 if not phones:
                     description = company.get('description', None)
-                    phones = re.findall(r"\b(\+?\d{1,3})?[-. \(\)]?\d{1,4}[-. \(\)]?\d{1,4}[-. \(\)]?\d{1,9}\b", description)
+                    phones = re.findall(r"\b((\+351)?(9|2)\d{2}\s?\d{3}\s?\d{3})\b", description)
             break
         page += 1 
     if phones: 
-        print(f"Telefones: {phones}") 
+        print(f"Telefones disponíveis: {phones}") 
     else:
         print("Nenhum número de telefone especificado.")
 
@@ -88,14 +88,14 @@ def email(job_id: int):
             emails = company.get('email')
             if not emails:
                 body = job.get("body", None)
-                emails = re.findall(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b", body)
+                emails = re.findall(r"\b[A-Za-z0-9._]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b", body)
                 if not emails:
                     description = company.get('description', None)
-                    emails = re.findall(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b", description)
+                    emails = re.findall(r"\b[A-Za-z0-9._]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b", description)
             break
         page += 1
     if emails:
-        print(f"Emails: {emails}")
+        print(f"Emails disponíveis: {emails}")
     else:
         print("Nenhum email especificado.")
 
