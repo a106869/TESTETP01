@@ -64,7 +64,7 @@ def contacto(job_id:int):
             break
         page += 1 
     if phones: 
-        print(f"Telefones: {', '.join(phones)}") 
+        print(f"Telefones: {phones}") 
     else:
         print("Nenhum número de telefone especificado.")
 
@@ -95,7 +95,7 @@ def email(job_id: int):
             break
         page += 1
     if emails:
-        print(f"Emails: {', '.join(emails)}")
+        print(f"Emails: {emails}")
     else:
         print("Nenhum email especificado.")
 
