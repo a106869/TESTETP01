@@ -1,5 +1,6 @@
 import typer
 import requests #pede acesso ao api
+from typing import Optional
 import json
 import csv
 
@@ -58,11 +59,29 @@ def top(n: int, export_csv: bool = False):
     if export_csv:
         exportar_csv(output)
 
-@app.command()
-def search(n: int):
-    """ Lista todos os trabalhos full-time publicados por uma determminada empresa, numa determinada região """
-    #tem que permitir inserir o número de traablhos a apresentar, caso contrário apresenta todos os trabalhos
-    #argumento opcional para csv
+def search(nome: str, localidade: str, n: Optional[int] = None, export_csv: bool = False):
+    """ Lista todos os trabalhos full-time publicados por uma determinada empresa, numa determinada região. 
+    Insira o nome da empresa e da localidade entre aspas para melhor funcionamento. """
+    jobs_full_time = []
+    page = 1 
+    while True:
+        data = response(page)
+        if 'results' not in data or not data['results']: # verificar se a chave 'results' existe; verificar se 'results está vazio'
+            break
+        for job in data['results']:
+            company_name = job.get('company', {}).get('name', None)  
+            if company_name == nome:
+                types = job.get('types', [{}]) 
+                if types[0].get('name') == 'Full-time':
+                    locations = job.get('locations', [{}]) 
+                    if any(location.get('name', None) == localidade for location in locations):
+                        jobs_full_time.append(job) 
+        page += 1    
+    if n is not None:
+        jobs_full_time = jobs_full_time[:n]
+    output = exibir_output(jobs_full_time)
+    if export_csv:
+        exportar_csv(output) 
 
 @app.command()
 def salary(n: int):
