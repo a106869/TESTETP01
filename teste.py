@@ -56,10 +56,10 @@ def contacto(job_id:int):
             company = job.get('company', {}) 
             phones = company.get('phone') 
             if not phones: 
-                body = job.get("body", "") 
+                body = job.get("body", None) 
                 phones = re.findall(r"\b(\+?\d{1,3})?[-. \(\)]?\d{1,4}[-. \(\)]?\d{1,4}[-. \(\)]?\d{1,9}\b", body) 
                 if not phones:
-                    description = company.get('description', '')
+                    description = company.get('description', None)
                     phones = re.findall(r"\b(\+?\d{1,3})?[-. \(\)]?\d{1,4}[-. \(\)]?\d{1,4}[-. \(\)]?\d{1,9}\b", description)
             break
         page += 1 
@@ -87,10 +87,10 @@ def email(job_id: int):
             company = job.get('company', {})
             emails = company.get('email')
             if not emails:
-                body = job.get("body", "")
+                body = job.get("body", None)
                 emails = re.findall(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b", body)
                 if not emails:
-                    description = company.get('description', '')
+                    description = company.get('description', None)
                     emails = re.findall(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b", description)
             break
         page += 1
