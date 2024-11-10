@@ -68,6 +68,7 @@ def contacto(job_id:int):
     else:
         print("Nenhum número de telefone especificado.")
 
+@app.command()
 def email(job_id: int): 
     """Extrai o email mencionado numa vaga."""
     page = 1
