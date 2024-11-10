@@ -32,38 +32,31 @@ def search(n: int):
 
 @app.command()
 def salary(job_id: int):
-    """Extrai a informação relativa ao salário oferecido por um determinado job_id"""
-    try:
-        page = 1
-        while True:
-            data = response(page)  # Chama a API para a página atual
-            
-            # Verifica se há resultados na página
-            if 'results' not in data or not data['results']:
-                print(f"Job com ID {job_id} não encontrado.")
-                break  # Se não houver resultados, sai do loop
-            
-            # Procura pelo job_id na lista de resultados
-            job = next((job for job in data['results'] if job['id'] == job_id), None)
-            
-            if job:
-                wage = job.get("wage")  # Verifica se o campo 'wage' existe no job
-                if wage:
-                    print(f"Salário: {wage}")
+    """Extrai o salário de uma vaga pelo job_id."""
+    page = 1
+    while True:
+        data = response(page)
+        if 'results' not in data or not data['results']:
+            print(f"Job com ID {job_id} não encontrado.")
+            break
+        
+        job = next((job for job in data['results'] if job['id'] == job_id), None)
+        if job:
+            wage = job.get("wage")
+            if wage:
+                print(f"Salário: {wage}")
+            else:
+                # Tenta extrair um valor da descrição usando regex para valores com 3+ dígitos
+                body = job.get("body", "")
+                wage_match = re.search(r"(\d{3,}([.,]\d{3})?\s?(€|\$|USD|£|₹))", body)
+                
+                if wage_match:
+                    estimated_wage = wage_match.group(0)
+                    print(f"Salário estimado: {estimated_wage}")
                 else:
-                    # Caso o salário não esteja presente, tenta buscar um valor na descrição usando regex
-                    body = job.get("body", "")
-                    wage_match = re.search(r"(\d{3,}(?:[\.,]\d{3})*)\s(?:€|\$|USD|£|₹|K)?", body)
-                    
-                    if wage_match:
-                        estimated_wage = wage_match.group(0)
-                        print(f"Salário estimado: {estimated_wage}")
-                    else:
-                        print("Salário não especificado")
-                break  # Encontrou o trabalho, sai do loop
-            page += 1  # Se o job não foi encontrado na página atual, tenta a próxima
-    except requests.RequestException:
-        print("Erro ao acessar a API. Verifique a conexão ou o job_id fornecido.")
+                    print("Salário não especificado")
+            break
+        page += 1
 
 
 
