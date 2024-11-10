@@ -1,10 +1,6 @@
 import typer
-from typing import Optional, Annotated, List
-import requests #pede acesso ao api
-from datetime import datetime
-import json
+import requests
 import re
-
 
 API_KEY = '71c6f8366ef375e8b61b33a56a2ce9d9'
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36', #engana o api a pensar que estou a aceder pro um navegador
@@ -15,7 +11,6 @@ def response(page): #função para fazer a requisição
     response = requests.get(url, headers=headers)
     data = response.json()
     return data
-
 
 app = typer.Typer()
 
@@ -39,26 +34,26 @@ def salary(job_id: int):
         if 'results' not in data or not data['results']:
             print(f"Job com ID {job_id} não encontrado.")
             break
-        
-        job = next((job for job in data['results'] if job['id'] == job_id), None)
+        job = None
+        for job in data['results']:
+            if job['id'] == job_id:
+                break
+        else:
+            job = None
         if job:
             wage = job.get("wage")
             if wage:
                 print(f"Salário: {wage}")
             else:
-                # Tenta extrair um valor da descrição usando regex para valores com 3+ dígitos
                 body = job.get("body", "")
                 wage_match = re.search(r"(\d{3,}([.,]\d{3})?\s?(€|\$|USD|£|₹))", body)
-                
                 if wage_match:
-                    estimated_wage = wage_match.group(0)
-                    print(f"Salário estimado: {estimated_wage}")
+                    estimated_wage = wage_match.group(0) #group retorna as partes da string que correspondem ao padrão da repex
+                    print(f"Salário: {estimated_wage}") #0 é o índice da correspondência
                 else:
                     print("Salário não especificado")
             break
         page += 1
-
-
 
 @app.command()
 def skills(n:int):
